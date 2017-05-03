@@ -15,8 +15,23 @@ class UsersTableSeeder extends Seeder
     // manually make a list of users
     $users = [
       [
+        'name'     => 'Visitante',
+        'email'    => 'visitante@expedicao.app',
+        'password' => bcrypt('visitante')
+      ],
+      [
+        'name'     => 'Usuario',
+        'email'    => 'usuario@expedicao.app',
+        'password' => bcrypt('usuario')
+      ],
+      [
+        'name'     => 'Gerente',
+        'email'    => 'gerente@expedicao.app',
+        'password' => bcrypt('gerente')
+      ],
+      [
         'name'     => 'Administrador',
-        'email'    => 'admin@todo.app',
+        'email'    => 'admin@expedicao.app',
         'password' => bcrypt('admin')
       ],
     ];

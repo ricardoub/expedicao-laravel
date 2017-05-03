@@ -49,11 +49,11 @@ class PermissionsTableSeeder extends Seeder
     $userDelete->description  = 'Delete user records';
     $userDelete->save();
 
-    $userOwner = new Permission();
-    $userOwner->name         = 'user-owner';
-    $userOwner->display_name = 'User Owner';
-    $userOwner->description  = 'Change own user record';
-    $userOwner->save();
+    $userProfile = new Permission();
+    $userProfile->name         = 'user-profile';
+    $userProfile->display_name = 'User Profile';
+    $userProfile->description  = 'Change own user record';
+    $userProfile->save();
 
     $userAdmin = new Permission();
     $userAdmin->name         = 'user-admin';
