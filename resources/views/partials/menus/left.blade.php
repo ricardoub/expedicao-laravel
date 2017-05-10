@@ -8,7 +8,7 @@
   </li>
   @if (!auth::guest())
     <li >
-      <a href="{{ url('todos.index') }}">
+      <a href="{{ route('tasks.index') }}">
         <i class="fa fa-tasks fa-fw"></i>
         Tarefas
       </a>
