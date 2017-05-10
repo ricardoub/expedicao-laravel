@@ -3,18 +3,98 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Auth;
+
+use App\User;
+use App\Task;
+use App\Combo;
 
 class TaskController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
+  private $route = 'tasks';
+
+  /**
+   * Display a listing of the actions.
+   *
+   * @return \array
+   */
+  public function getActions()
+  {
+    $actions['form']['index']   = "$this->route.index";
+    $actions['form']['store']   = "$this->route.store";
+    $actions['form']['update']  = "$this->route.update";
+    $actions['form']['destroy'] = "$this->route.destroy";
+
+    return $actions;
+  }
+
+  /**
+   * Display a listing of the buttons.
+   *
+   * @return \array
+   */
+  public function getButtons()
+  {
+    $buttons['home']['name']  = 'Inicio';
+    $buttons['home']['link']  = 'home';
+    $buttons['home']['icon']  = 'home';
+    $buttons['home']['class'] = 'default';
+
+    return $buttons;
+  }
+
+  /**
+   * Display a listing of the combos.
+   *
+   * @return \App\Combo
+   */
+  public function getCombos()
+  {
+    $combo = new Combo();
+    $combos['users']     = $combo->usersForSelect();
+    $combos['simnao']    = $combo->optionsForSelect('simnao');
+    $combos['status']    = $combo->optionsForSelect('status');
+    $combos['percent10'] = $combo->optionsForSelect('percent10');
+
+    return $combos;
+  }
+  /**
+   * Display a listing of the messages.
+   *
+   * @return \array
+   */
+  private function getMessages()
+  {
+    $messages['success']['store']  = 'Registro incluído com sucesso!';
+    $messages['success']['update'] = 'Registro atualizado com sucesso!';
+    $messages['success']['delete'] = 'Registro excluído com sucesso!';
+    $messages['error']['find']     = 'Registro não localizado!';
+    $messages['error']['delete']   = 'Falha ao excluir o registro!';
+
+    return $messages;
+  }
+
+  /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function index()
+  {
+    $actions = $this->getActions();
+    $buttons = $this->getButtons();
+    $combos  = $this->getCombos();
+
+    $tasks = Task::where('user_id', Auth::user()->id)->orderby('priority')->paginate(10);
+
+    return view('tasks.index')
+      ->with([
+        'models'  => $tasks,
+        'actions' => $actions,
+        'buttons' => $buttons,
+        'combos'  => $combos,
+      ]);
+  }
 
     /**
      * Show the form for creating a new resource.
@@ -81,4 +161,5 @@ class TaskController extends Controller
     {
         //
     }
+
 }
