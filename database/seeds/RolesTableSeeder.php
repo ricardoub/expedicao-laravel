@@ -36,5 +36,17 @@ class RolesTableSeeder extends Seeder
     $adminRole->display_name = 'Administrator';
     $adminRole->description  = 'The user is allowed to access and manage the all records of system';
     $adminRole->save();
+
+    $taskCommonRole = new Role();
+    $taskCommonRole->name         = 'task-common';
+    $taskCommonRole->display_name = 'TASKs create/edit'; // optional
+    $taskCommonRole->description  = 'User is allowed to (create new, list, show and edit their own) TASKs'; // optional
+    $taskCommonRole->save();
+
+    $taskAdvancedRole = new Role();
+    $taskAdvancedRole->name         = 'task-advanced';
+    $taskAdvancedRole->display_name = 'TASKs delete/change owner'; // optional
+    $taskAdvancedRole->description  = 'User is allowed to (delete and change the owner) on their own TASKs.'; // optional
+    $taskAdvancedRole->save();
   }
 }
