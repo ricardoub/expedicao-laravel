@@ -23,7 +23,7 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
     ];
 });
 
-$factory->define(App\Tarefa::class, function (Faker\Generator $faker) {
+$factory->define(App\Task::class, function (Faker\Generator $faker) {
 
     return [
         'name'       => $faker->text($maxNbChars = 100),
