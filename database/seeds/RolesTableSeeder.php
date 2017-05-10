@@ -13,29 +13,17 @@ class RolesTableSeeder extends Seeder
    */
   public function run()
   {
-    $visitorRole = new Role();
-    $visitorRole->name         = 'visitor';
-    $visitorRole->display_name = 'Visitor';
-    $visitorRole->description  = 'User is allowed to list register on system';
-    $visitorRole->save();
-
-    $unityCommonRole = new Role();
-    $unityCommonRole->name         = 'unity-common';
-    $unityCommonRole->display_name = 'Unity common user';
-    $unityCommonRole->description  = 'The user is allowed access to the records of his unit';
-    $unityCommonRole->save();
-
-    $unityManagerRole = new Role();
-    $unityManagerRole->name         = 'unity-manager';
-    $unityManagerRole->display_name = 'Unity manager user';
-    $unityManagerRole->description  = 'The user is allowed to access and manage the records of his unit';
-    $unityManagerRole->save();
-
     $adminRole = new Role();
     $adminRole->name         = 'admin';
     $adminRole->display_name = 'Administrator';
     $adminRole->description  = 'The user is allowed to access and manage the all records of system';
     $adminRole->save();
+
+    $taskBasicRole = new Role();
+    $taskBasicRole->name         = 'task-basic';
+    $taskBasicRole->display_name = 'TASKs create/edit'; // optional
+    $taskBasicRole->description  = 'User is allowed to (list and show their own) TASKs'; // optional
+    $taskBasicRole->save();
 
     $taskCommonRole = new Role();
     $taskCommonRole->name         = 'task-common';

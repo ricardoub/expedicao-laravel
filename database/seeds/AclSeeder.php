@@ -17,70 +17,17 @@ class AclSeeder extends Seeder
   {
     /*
      * ROLES
-<<<<<<< HEAD
      */
-
-    $visitorRole      = Role::where('name', '=', 'visitor')->first();
-    $unityCommonRole  = Role::where('name', '=', 'unity-common')->first();
-    $unityManagerRole = Role::where('name', '=', 'unity-manager')->first();
-    $adminRole        = Role::where('name', '=', 'admin')->first();
+    $adminRole         = Role::where('name', '=', 'admin')->first();
+    $visitorRole       = Role::where('name', '=', 'visitor')->first();
+    $tasksBasicRole    = Role::where('name', '=', 'task-basic')->first();
+    $tasksCommonRole   = Role::where('name', '=', 'task-common')->first();
+    $tasksAdvancedRole = Role::where('name', '=', 'task-advanced')->first();
 
     /*
      * PERMISSIONS
      */
-
-    // userRole
-    $userMenu    = Permission::where('name', '=', 'user-menu')->first();
-    $userProfile = Permission::where('name', '=', 'user-profile')->first();
-    $userIndex   = Permission::where('name', '=', 'user-index')->first();
-    $userShow    = Permission::where('name', '=', 'user-show')->first();
-    $userCreate  = Permission::where('name', '=', 'user-create')->first();
-    $userEdit    = Permission::where('name', '=', 'user-edit')->first();
-    $userDelete  = Permission::where('name', '=', 'user-delete')->first();
-    $userAdmin   = Permission::where('name', '=', 'user-admin')->first();
-
-    /*
-     * ACL
-     */
-    $visitorRole->attachPermissions(
-      array($userProfile));
-    $unityCommonRole->attachPermissions(
-      array($userProfile, $userMenu, $userIndex, $userShow));
-    $unityManagerRole->attachPermissions(
-      array($userCreate, $userEdit, $userDelete));
-
-    $adminRole->attachPermissions(
-      array($userAdmin));
-
-    /*
-     * USERS
-     */
-
-    $visitorUser = User::where('name', '=', 'Visitante')->first();
-    $visitorUser->roles()->attach($visitorRole->id);
-
-    $unityCommonUser = User::where('name', '=', 'Usuario')->first();
-    $unityCommonUser->roles()->attach($unityCommonRole->id);
-
-    $unityManagerUser = User::where('name', '=', 'Gerente')->first();
-    $unityManagerUser->roles()->attach($unityCommonRole->id);
-    $unityManagerUser->roles()->attach($unityManagerRole->id);
-
-    $userAdmin = User::where('name', '=', 'Administrador')->first();
-    $userAdmin->roles()->attach($unityCommonRole->id);
-    $userAdmin->roles()->attach($unityManagerRole->id);
-    $userAdmin->roles()->attach($adminRole->id);
-=======
-     */
-    $adminRole = Role::where('name', '=', 'admin')->first();
-
-    $taskCommonRole   = Role::where('name', '=', 'task-common')->first();
-    $taskAdvancedRole = Role::where('name', '=', 'task-advanced')->first();
-
-    /*
-     * PERMISSIONS
-     */
-    // task
+    // tasks
     $taskMenu    = Permission::where('name', '=', 'task-menu')->first();
     $taskIndex   = Permission::where('name', '=', 'task-index')->first();
     $taskShow    = Permission::where('name', '=', 'task-show')->first();
@@ -93,28 +40,35 @@ class AclSeeder extends Seeder
     /*
      * ACL
      */
-    $taskCommonRole->attachPermissions(
-      array($taskMenu, $taskIndex, $taskShow, $taskCreate, $taskEdit));
-    $taskAdvancedRole->attachPermissions(
-      array($taskOwner, $taskDelete));
+    $tasksBasicRole->attachPermissions(
+      array($taskMenu, $taskIndex, $taskShow));
+    $tasksCommonRole->attachPermissions(
+      array($taskCreate, $taskEdit));
+    $tasksAdvancedRole->attachPermissions(
+      array($taskDelete, $taskOwner));
     $adminRole->attachPermissions(
       array($taskAdmin));
 
-      /*
-       * USERS
-       */
-      $userCommon = User::where('name', '=', 'Usuario1')->first();
-      $userCommon->roles()->attach($taskCommonRole->id);
+    /*
+     * USERS
+     */
+    $userBasic = User::where('name', '=', 'usuario1')->first();
+    $userBasic->roles()->attach($tasksBasicRole->id);
 
-      $userAdvanced = User::where('name', '=', 'Usuario2')->first();
-      $userAdvanced->roles()->attach($taskCommonRole->id);
-      $userAdvanced->roles()->attach($taskAdvancedRole->id);
+    $userCommon = User::where('name', '=', 'usuario2')->first();
+    $userCommon->roles()->attach($tasksBasicRole->id);
+    $userCommon->roles()->attach($tasksCommonRole->id);
 
-      $userAdmin = User::where('name', '=', 'Administrador')->first();
-      $userAdmin->roles()->attach($taskCommonRole->id);
-      $userAdmin->roles()->attach($taskAdvancedRole->id);
-      $userAdmin->roles()->attach($adminRole->id);
->>>>>>> TAREFAS
+    $userManager = User::where('name', '=', 'Gerente')->first();
+    $userManager->roles()->attach($tasksBasicRole->id);
+    $userManager->roles()->attach($tasksCommonRole->id);
+    $userManager->roles()->attach($tasksAdvancedRole->id);
+
+    $userAdmin = User::where('name', '=', 'Administrador')->first();
+    $userAdmin->roles()->attach($tasksBasicRole->id);
+    $userAdmin->roles()->attach($tasksCommonRole->id);
+    $userAdmin->roles()->attach($tasksAdvancedRole->id);
+    $userAdmin->roles()->attach($adminRole->id);
 
   }
 }
