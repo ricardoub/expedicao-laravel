@@ -30,6 +30,6 @@ $factory->define(App\Task::class, function (Faker\Generator $faker) {
         'priority'   => $faker->unique->numberBetween(1,20),
         'percentage' => (10*$faker->numberBetween(0,10)),
         'status'     => $faker->numberBetween(1,6),
-        'user_id'    => $faker->numberBetween(1,3),
+        'user_id'    => $faker->numberBetween(1,4),
     ];
 });
