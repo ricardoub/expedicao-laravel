@@ -56,7 +56,9 @@
 
       <div class="row">
         <div class="container">
+
           <div class="panel panel-primary">
+
             <div class="panel-heading panel-master">
               <div class="btn-toolbar" role="toolbar" aria-label="...">
                 @if (!Auth::guest())
@@ -76,8 +78,11 @@
             <div class="panel-body">
               @yield('panel-body')
             </div>
+
             @yield('panel-footer')
-          </div>
+            
+          </div><!-- .panel-primary -->
+
         </div><!-- .container -->
       </div><!-- .row -->
 

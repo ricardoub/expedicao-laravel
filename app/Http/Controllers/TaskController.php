@@ -39,6 +39,18 @@ class TaskController extends Controller
     $buttons['home']['link']  = 'home';
     $buttons['home']['icon']  = 'home';
     $buttons['home']['class'] = 'default';
+    $buttons['create']['name']  = 'Incluir';
+    $buttons['create']['link']  = "$this->route.create";
+    $buttons['create']['icon']  = 'plus';
+    $buttons['create']['class'] = 'default';
+    $buttons['show']['name']  = 'Exibir';
+    $buttons['show']['link']  = "$this->route.show";
+    $buttons['show']['icon']  = 'folder-open-o';
+    $buttons['show']['class'] = 'default';
+    $buttons['delete']['name']  = 'Excluir';
+    $buttons['delete']['link']  = "$this->route.delete";
+    $buttons['delete']['icon']  = 'trash';
+    $buttons['delete']['class'] = 'danger';
 
     return $buttons;
   }

@@ -33,11 +33,21 @@
           </td>
           <td data-label="Ações">
             <span class="input-group-btn input-group">
-              @permission('todo-show')
-                @include('partials.buttons.tableButton-exibir')
+              @permission('task-show')
+                @include('partials.buttons.linkWithId', [
+                  'btnName'  => $buttons['show']['name'],
+                  'btnLink'  => $buttons['show']['link'],
+                  'btnIcon'  => $buttons['show']['icon'],
+                  'btnClass' => $buttons['show']['class'],
+                ])
               @endpermission
-              @permission('todo-delete')
-                @include('partials.buttons.tableButton-excluir')
+              @permission('task-delete')
+                @include('partials.buttons.linkWithId', [
+                  'btnName'  => $buttons['delete']['name'],
+                  'btnLink'  => $buttons['delete']['link'],
+                  'btnIcon'  => $buttons['delete']['icon'],
+                  'btnClass' => $buttons['delete']['class'],
+                ])
               @endpermission
             </span>
           </td>
