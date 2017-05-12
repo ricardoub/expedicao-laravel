@@ -8,6 +8,7 @@ use Auth;
 use App\User;
 use App\Task;
 use App\Combo;
+use App\Http\Requests\TaskFormRequest;
 
 class TaskController extends Controller
 {
@@ -35,22 +36,42 @@ class TaskController extends Controller
    */
   public function getButtons()
   {
-    $buttons['home']['name']  = 'Inicio';
-    $buttons['home']['link']  = 'home';
-    $buttons['home']['icon']  = 'home';
-    $buttons['home']['class'] = 'default';
+    $buttons['back']['name']  = 'Voltar';
+    $buttons['back']['link']  = "$this->route.index";
+    $buttons['back']['icon']  = 'arrow-left';
+    $buttons['back']['class'] = 'default';
+    $buttons['cancelindex']['name']  = 'Cancelar';
+    $buttons['cancelindex']['link']  = "$this->route.index";
+    $buttons['cancelindex']['icon']  = 'reply';
+    $buttons['cancelindex']['class'] = 'default';
     $buttons['create']['name']  = 'Incluir';
     $buttons['create']['link']  = "$this->route.create";
     $buttons['create']['icon']  = 'plus';
     $buttons['create']['class'] = 'default';
+    $buttons['delete']['name']  = 'Excluir';
+    $buttons['delete']['link']  = "$this->route.delete";
+    $buttons['delete']['icon']  = 'trash';
+    $buttons['delete']['class'] = 'default';
+    $buttons['destroy']['name']  = 'Excluir';
+    $buttons['destroy']['link']  = "$this->route.destroy";
+    $buttons['destroy']['icon']  = 'trash';
+    $buttons['destroy']['class'] = 'danger';
+    $buttons['edit']['name']  = 'Editar';
+    $buttons['edit']['link']  = "$this->route.edit";
+    $buttons['edit']['icon']  = 'edit';
+    $buttons['edit']['class'] = 'default';
+    $buttons['home']['name']  = 'Inicio';
+    $buttons['home']['link']  = 'home';
+    $buttons['home']['icon']  = 'home';
+    $buttons['home']['class'] = 'default';
     $buttons['show']['name']  = 'Exibir';
     $buttons['show']['link']  = "$this->route.show";
     $buttons['show']['icon']  = 'folder-open-o';
     $buttons['show']['class'] = 'default';
-    $buttons['delete']['name']  = 'Excluir';
-    $buttons['delete']['link']  = "$this->route.delete";
-    $buttons['delete']['icon']  = 'trash';
-    $buttons['delete']['class'] = 'danger';
+    $buttons['store']['name']  = 'Salvar';
+    $buttons['store']['link']  = "$this->route.store";
+    $buttons['store']['icon']  = 'save';
+    $buttons['store']['class'] = 'primary';
 
     return $buttons;
   }
@@ -85,6 +106,21 @@ class TaskController extends Controller
 
     return $messages;
   }
+  /**
+   * Display a listing of the options.
+   *
+   * @return \array
+   */
+  private function getOptions()
+  {
+    $options['form']['disabled']  = 'disabled';
+
+    return $options;
+  }
+  private function findTask($id)
+  {
+    return Task::find($id);
+  }
 
   /**
    * Display a listing of the resource.
@@ -94,6 +130,7 @@ class TaskController extends Controller
   public function index()
   {
     $actions = $this->getActions();
+    $options = $this->getOptions();
     $buttons = $this->getButtons();
     $combos  = $this->getCombos();
 
@@ -103,6 +140,7 @@ class TaskController extends Controller
       ->with([
         'models'  => $tasks,
         'actions' => $actions,
+        'options' => $options,
         'buttons' => $buttons,
         'combos'  => $combos,
       ]);
@@ -115,19 +153,50 @@ class TaskController extends Controller
      */
     public function create()
     {
-        //
+      $actions = $this->getActions();
+      $options = $this->getOptions();
+      $options['form']['disabled'] = null;
+      $buttons = $this->getButtons();
+      $combos  = $this->getCombos();
+
+      $task = new \App\Task();
+
+      return view('tasks.create')
+        ->with([
+          'model'   => $task,
+          'actions' => $actions,
+          'options' => $options,
+          'buttons' => $buttons,
+          'combos'  => $combos,
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+  /**
+   * Store a newly created resource in storage.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\Response
+   */
+  public function store(TaskFormRequest $request)
+  {
+    $actions  = $this->getActions();
+    $messages = $this->getMessages();
+
+    $input = \Request::except('_token');
+    extract($input);
+
+    $task = new \App\Task();
+    $task->name       = $name;
+    $task->priority   = $priority;
+    $task->percentage = $percentage;
+    $task->status     = $status;
+    $task->user_id    = $user_id;
+    $task->save();
+
+  return redirect()->route($actions['form']['index'])
+    ->with('msgSuccess', $messages['success']['store']);
+
+  }
 
     /**
      * Display the specified resource.
@@ -137,7 +206,25 @@ class TaskController extends Controller
      */
     public function show($id)
     {
-        //
+      $actions = $this->getActions();
+      $options = $this->getOptions();
+      $buttons = $this->getButtons();
+      $combos  = $this->getCombos();
+
+      $task = $this->findTask($id);
+      if (is_null($task)) {
+        return redirect()->route($actions['form']['index'])
+          ->withErros([$messages['error']['find']]);
+      }
+
+      return view('tasks.show')
+        ->with([
+          'model'   => $task,
+          'actions' => $actions,
+          'options' => $options,
+          'buttons' => $buttons,
+          'combos'  => $combos,
+        ]);
     }
 
     /**
@@ -148,7 +235,54 @@ class TaskController extends Controller
      */
     public function edit($id)
     {
-        //
+      $actions = $this->getActions();
+      $options = $this->getOptions();
+      $options['form']['disabled'] = null;
+      $buttons = $this->getButtons();
+      $combos  = $this->getCombos();
+
+      $task = $this->findTask($id);
+      if (is_null($task)) {
+        return redirect()->route($actions['form']['index'])
+          ->withErros([$messages['error']['find']]);
+      }
+
+      return view('tasks.edit')
+        ->with([
+          'model'   => $task,
+          'actions' => $actions,
+          'options' => $options,
+          'buttons' => $buttons,
+          'combos'  => $combos,
+        ]);
+    }
+    /**
+     * Show the form for destroy the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function delete($id)
+    {
+      $actions = $this->getActions();
+      $options = $this->getOptions();
+      $buttons = $this->getButtons();
+      $combos  = $this->getCombos();
+
+      $task = $this->findTask($id);
+      if (is_null($task)) {
+        return redirect()->route($actions['form']['index'])
+          ->withErros([$messages['error']['find']]);
+      }
+
+      return view('tasks.delete')
+        ->with([
+          'model'   => $task,
+          'actions' => $actions,
+          'options' => $options,
+          'buttons' => $buttons,
+          'combos'  => $combos,
+        ]);
     }
 
     /**
@@ -158,9 +292,29 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(TaskFormRequest $request, $id)
     {
-        //
+      $actions = $this->getActions();
+      $messages = $this->getMessages();
+
+      $input = \Request::all();
+      extract($input);
+
+      $task = $this->findTask($id);
+      if (is_null($task)) {
+        return redirect()->route($actions['form']['index'])
+          ->withErrors([$messages['error']['find']]);
+      }
+
+      $task->name       = $name;
+      $task->priority   = $priority;
+      $task->percentage = $percentage;
+      $task->status     = $status;
+      $task->user_id    = $user_id;
+      $task->save();
+
+      return redirect()->route($actions['form']['index'])
+        ->with('msgSuccess', $messages['success']['update']);
     }
 
     /**
@@ -171,7 +325,24 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        //
+      $actions  = $this->getActions();
+      $messages = $this->getMessages();
+
+      $task = $this->findTask($id);
+
+      if (is_null($task)) {
+        return redirect()->route($actions['form']['index'])
+          ->withErrors([$messages['error']['find']]);
+      }
+
+      $result = $task->delete();
+      if (!$result) {
+        return redirect()->route($actions['form']['index'])
+          ->withErrors([$messages['error']['delete']]);
+      }
+
+      return redirect()->route($actions['form']['index'])
+        ->with('msgSuccess', $messages['success']['delete']);
     }
 
 }
